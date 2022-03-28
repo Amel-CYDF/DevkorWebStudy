@@ -1,0 +1,15 @@
+.subject {
+	width: 20%;
+	padding: 5px;
+	margin: 5px;
+	border: 2px solid lightgray;
+	float: left;
+}
+
+.number {
+	color: gray;
+}
+
+.title {
+	font-weight: bold;
+}
