@@ -1,10 +1,92 @@
+.d-flex {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: center;
+}
 
+.landing-part {
+	background: linear-gradient(#5d95d6, #5260ba);
+	padding-top: 50px;
+	padding-left: 60px;
+	padding-right: 60px;
+}
 
+.land-text {
+	color: white;
+	flex-grow: 1;
+}
+
+.land-text-box {
+	max-width: 450px;
+}
+
+.btn-part {
+	text-align: center;
+	margin-top: 50px;
+}
+
+.land-btn {
+	padding-left: 18px;
+	padding-right: 18px;
+	padding-top: 12px;
+	padding-bottom: 12px;
+	color: white;
+	background-color: darkslategrey;
+	border-radius: 5px;
+	border-width: 0;
+	cursor: pointer;
+}
+.land-btn:hover {
+	background-color: rgb(44, 67, 67);
+	box-shadow: 0 0 3px 2px lightgrey;
+}
+
+.icon-part {
+	background-color: #5260ba;
+	margin-top: 50px;
+	padding: 40px;
+	text-align: center;
+	color: white;
+}
+
+.icon-box {
+	color: white;
+	text-align: center;
+	margin: 15px;
+}
+
+.icon-circle {
+	color: #5260ba;
+	background-color: white;
+	width: 80px;
+	height: 80px;
+	font-size: 40px;
+	border-radius: 50px;
+	padding-top: 20px;
+	box-sizing: border-box;
+	margin: auto;
+}
+
+.sub-title {
+	margin: 0;
+	margin-bottom: 5px;
+	font-size: small;
+}
+
+.img-part {
+	text-align: center;
+	margin-top: 50px;
+	margin-bottom: 50px;
+}
 
 @media screen and (max-width: 1200px){
 	
 }
 
 @media screen and (max-width: 768px){
-	
+	.land-text-box {
+		text-align: center;
+		margin: auto;
+	}
 }
