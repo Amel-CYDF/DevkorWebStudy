@@ -38,7 +38,9 @@
 	cursor: pointer;
 }
 .land-btn:hover {
-	background-color: rgb(44, 67, 67);
+	background-color: lightpink;
+	font-weight: bold;
+	color: black;
 	box-shadow: 0 0 3px 2px lightgrey;
 }
 
@@ -78,6 +80,62 @@
 	text-align: center;
 	margin-top: 50px;
 	margin-bottom: 50px;
+}
+
+.portfolio-box {
+	position: relative;
+	width: 50%;
+	color: white;
+	text-align: left;
+}
+
+.portfolio-box img {
+	filter: brightness(70%);
+	width: 100%;
+	position: relative;
+	z-index: -1;
+}
+
+.portfolio-text {
+	position: absolute;
+	left: 0;
+	top: 0;
+	padding-left: 30px;
+	padding-top: 20px;
+	width: 70%;
+}
+
+.portfolio-img {
+	width: 100%;
+	box-shadow: 0 0 0 10px #000 inset;
+}
+
+.portfolio-img:hover {
+	box-shadow: 0 0 0 10px #000 inset;
+}
+
+.haha {
+	position: relative;
+	background-image: url("img1.jpeg");
+	background-size: 100%;
+	width: 100%;
+}
+
+.haha:hover {
+	border: 10px solid black;
+}
+
+.bottom-icon-circle {
+	background-color: #5260ba;
+	color: white;
+	width: 60px;
+	height: 60px;
+	font-size: 25px;
+	border-radius: 50px;
+	padding-top: 18.5px;
+	padding-left: 18.5px;
+	box-sizing: border-box;
+	margin: 15px;
 }
 
 @media screen and (max-width: 1200px){
