@@ -3,11 +3,14 @@ const bcrypt = require('bcrypt');
 const router = express.Router();
 const User = require('../model/user');
 
+// get all users: GET /user
 router.get('/', async (req, res) => {
-	const user = await User.find({});
-	res.json(user);
+	const users = await User.find({});
+	res.json(users);
 	console.log('all user info sended');
 });
+
+// get user: GET /user/<id:String>
 router.get('/:id', async (req, res) => {
 	const user = await User.findOne({id: req.params.id});
 	if(!user) {
@@ -18,6 +21,8 @@ router.get('/:id', async (req, res) => {
 		console.log('user info sended: ' + req.params.id);
 	}
 });
+
+// add user: POST /user
 router.post('/', async (req, res) => {
 	if(!req.body.hasOwnProperty('id')) {
 		res.status(400).send('id parameter is empty');
@@ -46,6 +51,8 @@ router.post('/', async (req, res) => {
 	// console.log(user);
 	console.log('user created: ' + req.body.id);
 });
+
+// delete user: DELETE /user/<id:String>
 router.delete('/:id', async (req, res) => {
 	const user = await User.findOne({id: req.params.id});
 	if(!user) {
@@ -57,6 +64,8 @@ router.delete('/:id', async (req, res) => {
 		console.log('user deleted: ' + req.params.id);
 	}
 });
+
+// login: POST /user/login
 router.post('/login', async (req, res) => {
 	if(!req.body.hasOwnProperty('id')) {
 		res.status(400).send('id parameter is empty');
