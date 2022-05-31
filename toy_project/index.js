@@ -17,8 +17,9 @@ mongo.connect('mongodb://localhost:27017')
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 
-app.use(require('./api/user-api'));
-app.use(require('./api/review-api'));
+app.use('/user', require('./api/user-api'));
+app.use('/review', require('./api/review-api'));
+app.use('/movie', require('./api/movie-api'));
 
 app.listen(8080, () => {
 	console.log("listening on 8080");
