@@ -4,7 +4,7 @@ const Movie = require('../model/movie');
 
 // get all movie: GET /movie
 router.get('/', async (req, res) => {
-	const movies = await Movie.find({});
+	const movies = await Movie.find({}).lean();
 	res.json(movies);
 	console.log('all movie info sended');
 });
@@ -15,7 +15,7 @@ router.get('/:id', async (req, res) => {
 		res.status(400).send('id should be number type');
 		return;
 	}
-	const movie = await Movie.findOne({id: req.params.id});
+	const movie = await Movie.findOne({id: req.params.id}).lean();
 	if(!movie) {
 		res.status(400).send('no such movie');
 	}
@@ -35,10 +35,7 @@ router.post('/', async (req, res) => {
 		res.status(400).send('poster parameter is empty');
 		return;
 	}
-	// console.log(req.body.summary);
-	// return;
 	const movie = await Movie.create({
-		id: 1234,
 		title: req.body.title,
 		poster: req.body.poster,
 		summary: req.body.summary,
@@ -53,7 +50,7 @@ router.delete('/:id', async (req, res) => {
 		res.status(400).send('id should be number type');
 		return;
 	}
-	const movie = await Movie.findOne({id: req.params.id});
+	const movie = await Movie.findOne({id: req.params.id}).lean();
 	if(!movie) {
 		res.status(400).send('no such movie');
 	}

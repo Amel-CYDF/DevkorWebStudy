@@ -5,14 +5,14 @@ const User = require('../model/user');
 
 // get all users: GET /user
 router.get('/', async (req, res) => {
-	const users = await User.find({});
+	const users = await User.find({}).lean();
 	res.json(users);
 	console.log('all user info sended');
 });
 
 // get user: GET /user/<id:String>
 router.get('/:id', async (req, res) => {
-	const user = await User.findOne({id: req.params.id});
+	const user = await User.findOne({id: req.params.id}).lean();
 	if(!user) {
 		res.status(400).send('no such user');
 	}
@@ -54,7 +54,7 @@ router.post('/', async (req, res) => {
 
 // delete user: DELETE /user/<id:String>
 router.delete('/:id', async (req, res) => {
-	const user = await User.findOne({id: req.params.id});
+	const user = await User.findOne({id: req.params.id}).lean();
 	if(!user) {
 		res.status(400).send('no such user');
 	}
@@ -75,7 +75,7 @@ router.post('/login', async (req, res) => {
 		res.status(400).send('pw parameter is empty');
 		return;
 	}
-	const user = await User.findOne({id: req.body.id});
+	const user = await User.findOne({id: req.body.id}).lean();
 	if(!user) {
 		res.status(401).send('id does not exist');
 		return;
