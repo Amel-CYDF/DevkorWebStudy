@@ -1,5 +1,6 @@
 import Head from "next/head";
 import Link from "next/link";
+import Router from "next/router";
 import axios from "axios";
 import { IoPersonOutline, IoLockClosedOutline } from "react-icons/io5";
 import { TiDelete } from "react-icons/ti";
@@ -33,8 +34,13 @@ export default function Login() {
 	console.log(body);
 
 	axios
-		.post("http://localhost:8080/user/login", body)
-		.then(res => console.log(res));
+		.post("http://localhost:8080/user/login", body, {withCredentials: true})
+		.then((res) => {
+			if(res.status == 200) {
+				Router.push('/');
+			}
+			console.log(res);
+		});
   };
 
   return (

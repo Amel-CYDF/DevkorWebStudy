@@ -85,7 +85,16 @@ router.post("/login", async (req, res) => {
       res.status(401).send("pw wrong");
       console.log("login failed: " + req.body.id);
     } else {
-      res.json(user);
+		res.cookie("userInfo", {
+			name: user.name,
+			id: user.id,
+		}, {
+			maxAge: 1000*60*60, // 1 hour
+			httpOnly: true
+		});
+		// req.session.userid = user.id;
+		// req.session.save(() => res.status(200).send("login success"));
+		res.status(200).send("login success");
       console.log("login success: " + req.body.id);
     }
   });
