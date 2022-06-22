@@ -2,80 +2,84 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { Rating } from "react-simple-star-rating";
 import axios from "axios";
 
 export default function Review() {
-	const router = useRouter();
-	const { movieid } = router.query;
+const router = useRouter();
+const { movieid } = router.query;
 
-	const [userid, Setuserid] = useState(null);
+const [userid, Setuserid] = useState(null);
 
-	const [movie, setMovie] = useState(null);
-	const [reviews, setReviews] = useState(null);
-	const [myreview, setMyreview] = useState(null);
-	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState(null);
+const [movie, setMovie] = useState(null);
+const [reviews, setReviews] = useState(null);
+const [myreview, setMyreview] = useState(null);
+const [loading, setLoading] = useState(false);
+const [error, setError] = useState(null);
 
-	const [myscore, setMyscore] = useState(null);
-	const [mytext, setMytext] = useState(null);
-	const [score, setScore] = useState(null);
-	const [text, setText] = useState(null);
+const [rating, setRating] = useState(0);
+const [text, setText] = useState("");
 
-	useEffect(() => {
-		Setuserid(sessionStorage.getItem('userid'));
-	}, [])
-	useEffect(() => {
-		if(reviews == null) return;
-		reviews.forEach(element => {
-			if(element.userid == userid) {
-				setMyreview(element);
-				setMyscore(element.score);
-				setMytext(element.text);
-			}
-		});
-	}, [reviews])
+// rating: out of 100, score: out of 10
+// Catch Rating value
+const handleRating = (rate) => {
+	setRating(rate);
+	// other logic
+};
 
-  useEffect(() => {
+
+useEffect(() => {
+	Setuserid(sessionStorage.getItem('userid'));
+}, [])
+useEffect(() => {
+	if(reviews == null) return;
+	reviews.forEach(element => {
+		if(element.userid == userid) {
+			setMyreview(element);
+			setRating(element.score * 10);
+			setText(element.text);
+		}
+	});
+}, [reviews])
+
+useEffect(() => {
 	if(movieid == undefined) return;
-    const fetchMovie = async () => {
-      try {
-        //요청이 시작할 때는 error와 movies를 초기화
-        setMovie(null);
-        setError(null);
-        //loading 상태는 true로 바꿔준다.
-        setLoading(true);
-        let res = await axios.get("http://localhost:8080/movie/" + movieid);
-        setMovie(res.data);
+	const fetchMovie = async () => {
+	try {
+		//요청이 시작할 때는 error와 movies를 초기화
+		setMovie(null);
+		setError(null);
+		//loading 상태는 true로 바꿔준다.
+		setLoading(true);
+		let res = await axios.get("http://localhost:8080/movie/" + movieid);
+		setMovie(res.data);
 		res = await axios.get("http://localhost:8080/review/" + movieid);
 		setReviews(res.data);
 	} catch (e) {
-        setError(e);
-      }
-      setLoading(false);
-    };
+		setError(e);
+	}
+	setLoading(false);
+	};
 
-    fetchMovie();
-  }, [movieid]);
+	fetchMovie();
+}, [movieid]);
 
-  if (loading) return <div>로딩중...</div>;
-  if (error) return <div>에러가 발생했습니다.</div>;
-  if (!movie) return null;
+if (loading) return <div>로딩중...</div>;
+if (error) return <div>에러가 발생했습니다.</div>;
+if (!movie) return null;
 
 
-  const scoreHandler = (e) => {
-	setScore(e.target.value);
-  };
-  const textHandler = (e) => {
+const textHandler = (e) => {
 	setText(e.target.value);
-  };
+};
 
-  const addHandler = (e) => {
+const addHandler = (e) => {
 	e.preventDefault();
 
 	const body = {
 		movieid: movieid,
 		userid: userid,
-		score: score,
+		score: rating / 10,
 		text: text,
 	};
 	console.log(body);
@@ -90,8 +94,8 @@ export default function Review() {
 		.catch(err => {
 			alert(err.response.data);
 		});
-  }
-  const delHandler = (e) => {
+}
+const delHandler = (e) => {
 	e.preventDefault();
 
 	axios
@@ -104,21 +108,14 @@ export default function Review() {
 		.catch(err => {
 			alert(err.response.data);
 		});
-  }
-
-  const myscoreHandler = (e) => {
-	setMyscore(e.target.value);
-  };
-  const mytextHandler = (e) => {
-	setMytext(e.target.value);
-  };
-  const modHandler = (e) => {
+}
+const modHandler = (e) => {
 	e.preventDefault();
 
 	const body = {
 		id: myreview.id,
-		score: myscore,
-		text: mytext,
+		score: rating / 10,
+		text: text,
 	};
 	console.log(body);
 
@@ -132,31 +129,44 @@ export default function Review() {
 		.catch(err => {
 			alert(err.response.data);
 		});
-  }
+}
 
 
-  return (
+return (
 	<div>
 		<h1>{movie.title}</h1>
 		<img src={movie.poster}></img>
 		<div>
 			{ userid ? (
-				<div>
+				<div class="writereview">
+					<p>{userid}님의 리뷰:</p>
+					{ myreview ?
+						<p>{myreview.time}에 작성한 리뷰</p>
+					:
+						<p>아직 작성하시지 않았습니다. 지금 작성해보세요!</p>
+					}
+					<div class="review">
+						별점:{" "}
+						<Rating
+							allowHalfIcon={true}
+							onClick={handleRating}
+							ratingValue={rating} /* Available Props */
+							initialValue={rating / 2}
+						/>
+						리뷰:{" "}
+						<input
+							type="text"
+							value={text}
+							onChange={textHandler}
+						></input>
+					</div>
 				{ myreview ? (
-					<div>
-						<div class="myreivew">
-							<p>{myreview.time}</p>
-							<p>{myreview.userid}님의 리뷰:</p>
-							별점: <input type="text" value={myscore} onChange={myscoreHandler}></input>
-							리뷰: <input type="text" value={mytext} onChange={mytextHandler}></input>
-						</div>
+					<div class="buttondiv">
 						<button onClick={modHandler}>수정하기</button>
 						<button onClick={delHandler}>삭제하기</button>
 					</div>
 				) : (
-					<div>
-						<input type="text" placeholder="점수" value={score} onChange={scoreHandler}></input>
-						<input type="text" placeholder="내용" value={text} onChange={textHandler}></input>
+					<div class="buttondiv">
 						<button onClick={addHandler}>리뷰 작성하기</button>
 					</div>
 				) }
@@ -168,11 +178,17 @@ export default function Review() {
 				<li>
 					<p>{review.time}</p>
 					<p>{review.userid}님의 리뷰:</p>
-					<p>별점: {review.score}점</p>
+					<p>별점: 
+						<Rating
+							readonly={true}
+							allowHalfIcon={true}
+							initialValue={review.score / 2}
+						/>
+					</p>
 					<p>리뷰: {review.text}</p>
 				</li>
 			))}
 		</ul>
 	</div>
-  );
+);
 }
