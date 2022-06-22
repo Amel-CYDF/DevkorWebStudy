@@ -1,52 +1,55 @@
 import axios from "axios";
 import Head from "next/head";
 import Link from "next/link";
-import Router from "next/router";
 import { useState } from "react";
-import { IoPersonOutline, IoLockClosedOutline } from "react-icons/io5";
-import { TiDelete } from "react-icons/ti";
 
 const checkid = (text) => {};
 
 export default function Register() {
-	const [id, Setid] = useState("");
-	const [name, Setname] = useState("");
-	const [pw, Setpw] = useState("");
+  const [id, Setid] = useState("");
+  const [name, Setname] = useState("");
+  const [pw, Setpw] = useState("");
+  const [error, setError] = useState(false);
 
-	const idHandler = (e) => {
-		e.preventDefault();
-		Setid(e.target.value);
-	};
-	const nameHandler = (e) => {
-		e.preventDefault();
-		Setname(e.target.value);
-	};
-	const pwHandler = (e) => {
-		e.preventDefault();
-		Setpw(e.target.value);
-	};
+  const idHandler = (e) => {
+    e.preventDefault();
+    Setid(e.target.value);
+  };
+  const nameHandler = (e) => {
+    e.preventDefault();
+    Setname(e.target.value);
+  };
+  const pwHandler = (e) => {
+    e.preventDefault();
+    Setpw(e.target.value);
+  };
 
-	const submitHandler = (e) => {
-		e.preventDefault();
+  const submitHandler = (e) => {
+    e.preventDefault();
 
-		const body = {
-			id: id,
-			name: name,
-			pw: pw
-		};
-		console.log(body);
+    if (id === "" || name === "" || pw === "") setError(true);
+    if (error) {
+      alert("회원가입 양식을 모두 입력해주세요.");
+    } else {
+      const body = {
+        id: id,
+        name: name,
+        pw: pw,
+      };
+      console.log(body);
 
-		axios
-			.post("http://localhost:8080/user", body)
-			.then((res) => {
-				console.log(res);
-				alert('회원 가입 성공!');
-				Router.push('/login');
-			})
-			.catch(err => {
-				alert(err.response.data);
-			});
-	};
+      axios
+        .post("http://localhost:8080/user", body)
+		.then((res) => {
+			console.log(res);
+			alert('회원 가입 성공!');
+			Router.push('/login');
+		})
+		.catch(err => {
+			alert(err.response.data);
+		});
+    }
+  };
 
   return (
     <div className="wrapper">
@@ -75,8 +78,8 @@ export default function Register() {
                   title="name"
                   maxLength="20"
                   className="input-text"
-				  value={name}
-				  onChange={nameHandler}
+                  value={name}
+                  onChange={nameHandler}
                 />
                 <span
                   className="error-msg"
@@ -89,8 +92,8 @@ export default function Register() {
                 <h3 className="join-title">아이디</h3>
                 <input
                   type="text"
-				  value={id}
-				  onChange={idHandler}
+                  value={id}
+                  onChange={idHandler}
                   id="id"
                   name="id"
                   title="ID"
@@ -113,8 +116,8 @@ export default function Register() {
                   title="Enter Password"
                   maxLength="20"
                   className="input-text"
-				  value={pw}
-				  onChange={pwHandler}
+                  value={pw}
+                  onChange={pwHandler}
                 />
                 <span
                   className="error-msg"
