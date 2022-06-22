@@ -3,7 +3,6 @@ import Header from "../src/components/header";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Router from "next/router";
-import Link from "next/link";
 
 export default function Home() {
 const [movies, setMovies] = useState(null);

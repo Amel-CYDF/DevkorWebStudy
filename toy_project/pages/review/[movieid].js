@@ -1,5 +1,3 @@
-import Head from "next/head";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Rating } from "react-simple-star-rating";
@@ -20,10 +18,16 @@ const [error, setError] = useState(null);
 const [rating, setRating] = useState(0);
 const [text, setText] = useState("");
 
+const [avgrating, setAvgrating] = useState(0);
+
 // rating: out of 100, score: out of 10
 // Catch Rating value
 const handleRating = (rate) => {
 	setRating(rate);
+	// other logic
+};
+const handleAvgrating = (rate) => {
+	setavgRating(rate);
 	// other logic
 };
 
@@ -55,6 +59,8 @@ useEffect(() => {
 		setMovie(res.data);
 		res = await axios.get("http://localhost:8080/review/" + movieid);
 		setReviews(res.data);
+		res = await axios.get("http://localhost:8080/review/score/" + movieid);
+		setAvgrating(res.data);
 	} catch (e) {
 		setError(e);
 	}
@@ -137,6 +143,15 @@ return (
 		<h1>{movie.title}</h1>
 		<img src={movie.poster}></img>
 		<div>
+			평균 별점: {" "}
+			<Rating
+				readonly={true}
+				allowHalfIcon={true}
+				initialValue={avgrating / 2}
+			/>
+			<b>{avgrating.toFixed(2)}점</b>
+		</div>
+		<div>
 			{ userid ? (
 				<div class="writereview">
 					<p>{userid}님의 리뷰:</p>
@@ -160,16 +175,16 @@ return (
 							onChange={textHandler}
 						></input>
 					</div>
-				{ myreview ? (
-					<div class="buttondiv">
-						<button onClick={modHandler}>수정하기</button>
-						<button onClick={delHandler}>삭제하기</button>
-					</div>
-				) : (
-					<div class="buttondiv">
-						<button onClick={addHandler}>리뷰 작성하기</button>
-					</div>
-				) }
+					{ myreview ? (
+						<div class="buttondiv">
+							<button onClick={modHandler}>수정하기</button>
+							<button onClick={delHandler}>삭제하기</button>
+						</div>
+					) : (
+						<div class="buttondiv">
+							<button onClick={addHandler}>리뷰 작성하기</button>
+						</div>
+					) }
 				</div>
 			) : "" }
 		</div>

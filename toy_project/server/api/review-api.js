@@ -6,14 +6,30 @@ const User = require("../model/user");
 
 // get average score (at amovie): GET /review/score/<movieid:Number>
 router.get("/score/:movieid", async (req, res) => {
-	const _movieid = req.params.movieid;
-	const ret = await Review.aggregate([
-		{ $match: { movieid: _movieid} },
-		{ $group: { _id: null, average: { $avg: "$score"} } },
-	]).exec();
-	console.log(_movieid);
+	if (isNaN(Number(req.params.movieid))) {
+		res.status(400).send("movieid should be number type");
+		return;
+	}
+	const ret = await Review.aggregate()
+		.match({ movieid : Number(req.params.movieid) })
+		.group({ _id: null, score: { $avg: "$score"} })
 	console.log(ret);
-	res.send(ret);
+	if(ret.length)
+		res.send(String(ret[0].score));
+	else
+		res.send('0');
+});
+
+// get all movies' average score : GET /review/score/
+router.get("/score/", async (req, res) => {
+	const agg = Review.aggregate();
+	agg
+		.group({ _id: "$movieid", score: { $avg: "$score"} })
+		.exec()
+		.then((ress) => {
+			console.log('all score sended');
+			res.send(ress);
+		});
 });
 
 // get all review (at a movie): GET /review/<movieid:Number>
