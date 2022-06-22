@@ -36,7 +36,7 @@ export default function Review() {
 	}, [reviews])
 
   useEffect(() => {
-	if(userid == null || movieid == undefined) return;
+	if(movieid == undefined) return;
     const fetchMovie = async () => {
       try {
         //요청이 시작할 때는 error와 movies를 초기화
@@ -55,7 +55,7 @@ export default function Review() {
     };
 
     fetchMovie();
-  }, [userid, movieid]);
+  }, [movieid]);
 
   if (loading) return <div>로딩중...</div>;
   if (error) return <div>에러가 발생했습니다.</div>;
@@ -140,24 +140,28 @@ export default function Review() {
 		<h1>{movie.title}</h1>
 		<img src={movie.poster}></img>
 		<div>
-			{ myreview ? (
+			{ userid ? (
 				<div>
-					<div class="myreivew">
-						<p>{myreview.time}</p>
-						<p>{myreview.userid}님의 리뷰:</p>
-						별점: <input type="text" value={myscore} onChange={myscoreHandler}></input>
-						리뷰: <input type="text" value={mytext} onChange={mytextHandler}></input>
+				{ myreview ? (
+					<div>
+						<div class="myreivew">
+							<p>{myreview.time}</p>
+							<p>{myreview.userid}님의 리뷰:</p>
+							별점: <input type="text" value={myscore} onChange={myscoreHandler}></input>
+							리뷰: <input type="text" value={mytext} onChange={mytextHandler}></input>
+						</div>
+						<button onClick={modHandler}>수정하기</button>
+						<button onClick={delHandler}>삭제하기</button>
 					</div>
-					<button onClick={modHandler}>수정하기</button>
-					<button onClick={delHandler}>삭제하기</button>
+				) : (
+					<div>
+						<input type="text" placeholder="점수" value={score} onChange={scoreHandler}></input>
+						<input type="text" placeholder="내용" value={text} onChange={textHandler}></input>
+						<button onClick={addHandler}>리뷰 작성하기</button>
+					</div>
+				) }
 				</div>
-			) : (
-				<div>
-					<input type="text" placeholder="점수" value={score} onChange={scoreHandler}></input>
-					<input type="text" placeholder="내용" value={text} onChange={textHandler}></input>
-					<button onClick={addHandler}>리뷰 작성하기</button>
-				</div>
-			) }
+			) : "" }
 		</div>
 		<ul>
 			{reviews.map((review) => (

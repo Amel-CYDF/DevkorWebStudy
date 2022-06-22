@@ -5,7 +5,16 @@ const Movie = require("../model/movie");
 const User = require("../model/user");
 
 // get average score (at amovie): GET /review/score/<movieid:Number>
-router.get("/score/:movieid", async (req, res) => {});
+router.get("/score/:movieid", async (req, res) => {
+	const _movieid = req.params.movieid;
+	const ret = await Review.aggregate([
+		{ $match: { movieid: _movieid} },
+		{ $group: { _id: null, average: { $avg: "$score"} } },
+	]).exec();
+	console.log(_movieid);
+	console.log(ret);
+	res.send(ret);
+});
 
 // get all review (at a movie): GET /review/<movieid:Number>
 router.get("/:movieid", async (req, res) => {
