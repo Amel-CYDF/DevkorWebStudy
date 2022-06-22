@@ -14,12 +14,12 @@ router.get("/:movieid", async (req, res) => {
     return;
   }
   const reviews = await Review.find({ movieid: req.params.movieid }).lean();
-  if (reviews.length == 0) {
-    res.status(400).send("no such review");
-  } else {
+//   if (reviews.length == 0) {
+//     res.status(400).send("no such review");
+//   } else {
     res.json(reviews);
     console.log("all review sended: " + req.params.movieid);
-  }
+//   }
 });
 
 // get my review (at a movie): GET /review/<movieid:Number>/<userid:String>

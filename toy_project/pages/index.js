@@ -1,5 +1,6 @@
 import Head from "next/head";
 import Link from "next/link";
+import Router from "next/router";
 import Header from "../src/components/header";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -17,7 +18,7 @@ export default function Home() {
         setError(null);
         //loading 상태는 true로 바꿔준다.
         setLoading(true);
-        const response = await axios.get("/movies.json");
+        const response = await axios.get("http://localhost:8080/movie");
         setMovies(response.data);
       } catch (e) {
         setError(e);
@@ -31,6 +32,10 @@ export default function Home() {
   if (loading) return <div>로딩중...</div>;
   if (error) return <div>에러가 발생했습니다.</div>;
   if (!movies) return null;
+
+  const onClickHandler = (movieid, e) => {
+		Router.push('/review/'+movieid);
+  }
 
   return (
     <div className="container">
@@ -68,7 +73,7 @@ export default function Home() {
                       </div>
                     </div>
                     <div className="title-area">{movie.title}</div>
-                    <div className="fake-button">예매하기</div>
+                    <div className="fake-button" onClick={e => {onClickHandler(movie.id, e);}}>리뷰보기</div>
                   </div>
                 </li>
               ))}
