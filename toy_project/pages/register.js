@@ -37,7 +37,9 @@ export default function Register() {
 
 		axios
 			.post("http://localhost:8080/user", body)
-			.then(res => console.log(res));
+			.then((res) => {
+				console.log(res);
+			});
 	};
 
   return (
