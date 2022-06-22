@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
 import { useCookies } from "react-cookie"
-
+import Router from "next/router";
 
 export default function MyPage() {
-	const [cookie, setCookie, removeCookie] = useCookies(['userInfo']);
 	const [text, setText] = useState('');
 
 	useEffect(() => {
-		getCookie();
-	}, []);
-
-	const getCookie = () => {
-		setText(Cookies.get(userInfo).id);
-	}
+		if(sessionStorage.getItem('userid') == null) {
+			console.log('not logined!');
+			Router.push('/login');
+		}
+		else {
+			setText(sessionStorage.getItem('userid'));
+		}
+	});
 
 	return (
 		<div>
