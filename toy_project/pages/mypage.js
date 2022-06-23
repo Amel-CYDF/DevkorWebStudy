@@ -28,7 +28,7 @@ useEffect(() => {
 		setError(null);
 		setLoading(true);
 		const response = await axios.get("http://localhost:8080/user/" + id);
-		setUser(JSON.stringify(response.data.name));
+		setUser(String(response.data.name));
 		} catch (e) {
 		setError(e);
 		}
@@ -41,6 +41,22 @@ if (loading) return <div>로딩중...</div>;
 if (error) return <div>에러가 발생했습니다.</div>;
 if (!user) return null;
 
+const delHandler = (e) => {
+	e.preventDefault();
+
+	axios
+	.delete("http://localhost:8080/user/" + id)
+	.then((res) => {
+		console.log(res);
+		sessionStorage.removeItem("userid");
+		alert('회원 탈퇴 성공');
+		Router.push('/');
+	})
+	.catch(err => {
+		alert(err.response.data);
+	});
+}
+
 return (
 	<div className="container">
 		<Head>
@@ -51,18 +67,69 @@ return (
 		<Header loginStatus={id} />
 
 		<div className="wrapper">
-		<div className="title-wrap">
-			<h3>내 정보 | My Page</h3>
-		</div>
-		<div className="member-info-wrapper">
-			<div className="info-row">
-			name: {user.substring(1, 4)}, id: {id}
+			<div className="title-wrap">
+				<h3>내 정보 | My Page</h3>
 			</div>
-		</div>
+			<form name="join_form" onSubmit={delHandler}>
+				<div className="container">
+					<div className="content">
+					<div className="join-content">
+						{/* --- 아이디 입력 Row --- */}
+						<div className="join-row">
+						<h3 className="join-title">이름(실명)</h3>
+						<input
+							type="text"
+							id="name"
+							name="name"
+							title="name"
+							maxLength="20"
+							className="input-text"
+							value={user}
+							readOnly
+						/>
+						<span
+							className="error-msg"
+							id="name-error"
+							aria-live="assertive"
+						></span>
+						</div>
+						{/* --- 아이디 입력 Row --- */}
+						<div className="join-row">
+						<h3 className="join-title">아이디</h3>
+						<input
+							type="text"
+							value={id}
+							id="id"
+							name="id"
+							title="ID"
+							maxLength="20"
+							className="input-text"
+							readOnly
+						/>
+						<span
+							className="error-msg"
+							id="id-error"
+							aria-live="assertive"
+						></span>
+						</div>
+						</div>
+						{/* --- 가입하기 버튼 --- */}
+						<div className="btn-area">
+						<button type="submit" id="btnjoin" className="btn-join">
+							<span>탈퇴하기</span>
+						</button>
+						</div>
+					</div>
+				</div>
+			</form>
 		</div>
 		<style jsx>{`
+		.content {
+			width: 460px;
+			// margin: 0 auto;
+		}
 		.container {
-			min-height: 100vh;
+			// min-height: 100vh;
 			width: 100vw;
 			box-sizing: border-box;
 		}
@@ -86,6 +153,46 @@ return (
 			border-bottom: 3px solid #241d1e;
 			box-sizing: content-box;
 			line-height: 55px;
+		}
+
+		.member-info-wrapper {
+			
+		}
+		
+		.input-text {
+			height: 50px;
+			width: 100%;
+			border: solid 2px #f70000;
+			border-radius: 6px;
+			padding: 10px 10px 10px 14px;
+			font-size: 16px;
+			box-sizing: border-box;
+		}
+
+		.input-text:focus {
+			outline: none;
+		}
+
+		.btn-area {
+			margin: 30px 0 9px;
+		}
+
+		.btn-join {
+			width: 100%;
+			padding: 15px 0 15px;
+			display: block;
+			font-size: 18px;
+			font-weight: 700;
+			text-align: center;
+			cursor: pointer;
+			box-sizing: border-box
+			color: #fff;
+			border: solid 1px rgba(0,0,0,.08);
+			background-color: #f70000;
+		}
+
+		.btn-join span {
+			color: white;
 		}
 		`}</style>
 

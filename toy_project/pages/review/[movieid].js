@@ -2,6 +2,11 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Rating } from "react-simple-star-rating";
 import axios from "axios";
+import Head from "next/head";
+import Header from "../../src/components/header";
+import { IoChatboxEllipsesOutline } from "react-icons/io5";
+import ReviewNidLogin from "../../src/components/ReviewNidLogin";
+import ReviewList from "../../src/components/ReviewList";
 
 export default function Review() {
 const router = useRouter();
@@ -27,7 +32,7 @@ const handleRating = (rate) => {
 	// other logic
 };
 const handleAvgrating = (rate) => {
-	setavgRating(rate);
+	setAvgrating(rate);
 	// other logic
 };
 
@@ -35,16 +40,16 @@ const handleAvgrating = (rate) => {
 useEffect(() => {
 	Setuserid(sessionStorage.getItem('userid'));
 }, [])
-useEffect(() => {
-	if(reviews == null) return;
-	reviews.forEach(element => {
-		if(element.userid == userid) {
-			setMyreview(element);
-			setRating(element.score * 10);
-			setText(element.text);
-		}
-	});
-}, [reviews])
+// useEffect(() => {
+// 	if(reviews == null) return;
+// 	reviews.forEach(element => {
+// 		if(element.userid == userid) {
+// 			setMyreview(element);
+// 			setRating(element.score * 10);
+// 			setText(element.text);
+// 		}
+// 	});
+// }, [reviews])
 
 useEffect(() => {
 	if(movieid == undefined) return;
@@ -139,71 +144,148 @@ const modHandler = (e) => {
 
 
 return (
-	<div>
-		<h1>{movie.title}</h1>
-		<img src={movie.poster}></img>
-		<div>
-			평균 별점: {" "}
-			<Rating
-				readonly={true}
-				allowHalfIcon={true}
-				initialValue={avgrating / 2}
-			/>
-			<b>{avgrating.toFixed(2)}점</b>
-		</div>
-		<div>
-			{ userid ? (
-				<div class="writereview">
-					<p>{userid}님의 리뷰:</p>
-					{ myreview ?
-						<p>{myreview.time}에 작성한 리뷰</p>
-					:
-						<p>아직 작성하시지 않았습니다. 지금 작성해보세요!</p>
-					}
-					<div class="review">
-						별점:{" "}
-						<Rating
-							allowHalfIcon={true}
-							onClick={handleRating}
-							ratingValue={rating} /* Available Props */
-							initialValue={rating / 2}
-						/>
-						리뷰:{" "}
-						<input
-							type="text"
-							value={text}
-							onChange={textHandler}
-						></input>
-					</div>
-					{ myreview ? (
-						<div class="buttondiv">
-							<button onClick={modHandler}>수정하기</button>
-							<button onClick={delHandler}>삭제하기</button>
-						</div>
-					) : (
-						<div class="buttondiv">
-							<button onClick={addHandler}>리뷰 작성하기</button>
-						</div>
-					) }
+	<div className="container">
+		<Head>
+			<title>영화정보 | {movie.title}</title>
+			<link rel="icon" href="/favicon.ico" />
+		</Head>
+
+		<Header loginStatus={userid} />
+
+		<main>
+			<div className="review-container">
+			<div className="movie-info">
+				<img src={movie.poster} />
+				<div className="info-container">
+				<div className="title-wrap">
+					<h3 style={{ fontWeight: "700" }}>{movie.title}</h3>
+					<h3 id="title-rating">
+					<Rating readonly={true} initialValue={avgrating / 2} />{" "}
+					<span id="title-rating">{avgrating.toFixed(1)}</span>
+					</h3>
 				</div>
-			) : "" }
-		</div>
+				<div className="info-wrap">
+					<p className="summary">{movie.summary}</p>
+				</div>
+				</div>
+			</div>
+			<div className="rating-container">
+				<div className="rating-tit">
+				<IoChatboxEllipsesOutline size={36} color="#342568" />{" "}
+				<span className="emph-wrap">
+					<span className="emph">{movie.title}</span>에 대한 이야기를
+					나눠보세요!
+				</span>
+				</div>
+				<ReviewNidLogin movieId={movieid} />
+				<ReviewList movieId={movieid} />
+			</div>
+			</div>
+		</main>
+
 		<ul>
-			{reviews.map((review) => (
-				<li>
-					<p>{review.time}</p>
-					<p>{review.userid}님의 리뷰:</p>
-					<p>별점: 
-						<Rating
-							readonly={true}
-							allowHalfIcon={true}
-							initialValue={review.score / 2}
-						/>
-					</p>
-					<p>리뷰: {review.text}</p>
+			{reviews ? (
+			reviews.map((review) => (
+				<li key={review.userid}>
+				<p>{review.time}</p>
+				<p>{review.userid}님의 리뷰:</p>
+				<p>
+					별점:
+					<Rating
+					readonly={true}
+					allowHalfIcon={true}
+					initialValue={review.score / 2}
+					fillColor="#f70000"
+					/>
+				</p>
+				<p>리뷰: {review.text}</p>
 				</li>
-			))}
+			))
+			) : (
+			<p>그런거없음ㅋㅋ</p>
+			)}
 		</ul>
+
+		<style jsx>{`
+			.container {
+			min-height: 100vh;
+			width: 100vw;
+			box-sizing: border-box;
+			}
+			.review-container {
+			width: 1400px;
+			margin: 0 auto;
+			}
+			h3 {
+			font-size: 36px;
+			font-weight: 500;
+			color: #222;
+			vertical-align: middle;
+			margin: 0;
+			}
+			.title-wrap {
+			height: 60px;
+			border-bottom: 3px solid #241d1e;
+			box-sizing: content-box;
+			display: flex;
+			justify-content: space-between;
+			}
+			#title-rating {
+			color: #6543b1;
+			}
+			.movie-info {
+			display: flex;
+			align-items: center;
+			width: 100%;
+			height: 500px;
+			padding-top: 20px;
+			box-sizing: content-box;
+			}
+			.movie-info img {
+			width: 280px;
+			height: 400px;
+			border-radius: 10px;
+			}
+			.info-container {
+			margin-left: 30px;
+			height: 400px;
+			width: 100%;
+			}
+			.summary {
+			margin: 0;
+			white-space: pre-line;
+			padding-top: 20px;
+			}
+			.rating-tit {
+			display: flex;
+			width: 100%;
+			align-items: center;
+			}
+			.emph-wrap {
+			margin-left: 5px;
+			font-size: 20px;
+			}
+			.emph {
+			font-weight: 700;
+			color: #342568;
+			margin-right: 5px;
+			font-size: 24px;
+			}
+		`}</style>
+
+		<style jsx global>{`
+			html,
+			body {
+			padding: 0;
+			margin: 0;
+			font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+				Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
+				sans-serif;
+			}
+			* {
+			box-sizing: border-box;
+			}
+		`}</style>
 	</div>
 );
 }

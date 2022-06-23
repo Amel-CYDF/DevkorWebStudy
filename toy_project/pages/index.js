@@ -10,6 +10,7 @@ const [loading, setLoading] = useState(false);
 const [error, setError] = useState(null);
 
 const [loginStatus, setLoginStatus] = useState(false);
+const [avgscore, setAvgscore] = useState(0);
 
 useEffect(() => {
 	if (sessionStorage.getItem("userid") != null) {
