@@ -35,6 +35,10 @@ router.post("/", async (req, res) => {
 		res.status(400).send("pw parameter is empty");
 		return;
 	}
+	if (req.body.pw == undefined || req.body.pw == null || req.body.pw == '') {
+		res.status(400).send("check pw");
+		return;
+	}
 	const dup = await User.findOne({ id: req.body.id }).lean();
 	// console.log(dup);
 	if (dup != null) {

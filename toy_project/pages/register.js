@@ -7,10 +7,11 @@ import { useState } from "react";
 const checkid = (text) => {};
 
 export default function Register() {
+
 const [id, Setid] = useState("");
 const [name, Setname] = useState("");
 const [pw, Setpw] = useState("");
-const [error, setError] = useState(false);
+const [pw2, setPw2] = useState("");
 
 const idHandler = (e) => {
 	e.preventDefault();
@@ -25,12 +26,18 @@ const pwHandler = (e) => {
 	Setpw(e.target.value);
 };
 
+const pw2Handler = (e) => {
+	e.preventDefault();
+	setPw2(e.target.value);
+};
+
 const submitHandler = (e) => {
 	e.preventDefault();
 
-	if (id === "" || name === "" || pw === "") setError(true);
-	if (error) {
+	if (id === "" || name === "" || pw === "") {
 		alert("회원가입 양식을 모두 입력해주세요.");
+	} else if (pw != pw2) {
+		alert("처음 입력한 비밀번호와 일치하지 않습니다.");
 	} else {
 		const body = {
 		id: id,
@@ -81,6 +88,7 @@ return (
 					className="input-text"
 					value={name}
 					onChange={nameHandler}
+					autoComplete="off"
 				/>
 				<span
 					className="error-msg"
@@ -100,6 +108,7 @@ return (
 					title="ID"
 					maxLength="20"
 					className="input-text"
+					autoComplete="off"
 				/>
 				<span
 					className="error-msg"
@@ -136,6 +145,8 @@ return (
 					title="ReEnter Password"
 					maxLength="20"
 					className="input-text"
+					value={pw2}
+					onChange={pw2Handler}
 				/>
 				<span
 					className="error-msg"
